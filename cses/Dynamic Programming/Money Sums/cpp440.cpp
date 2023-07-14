@@ -12,32 +12,38 @@ using namespace __gnu_pbds;
 typedef long long ll;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
-typedef tree<int,null_type, less<int>, rb_tree_tag, 
+typedef tree<int,null_type, less<int>, rb_tree_tag,
 tree_order_statistics_node_update> ordered_set;
-typedef tree<int, null_type, less_equal<int> rb_tree_tag,
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag,
 tree_order_statistics_node_update> ordered_multiset;
 //erase: oms.erase(oms.upper_bound(value))
-
 
 const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-int n, k;
-ordered_set oset;
+int n;
+vector<int> numb;
+bitset<mak> bis;
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 
-    cin >> n >> k;
-    for(int i = 1; i <= n; i++) oset.insert(i);
+    cin >> n;
+    numb.resize(n);
+    for(int i = 0; i < n; i++)
+        cin >> numb[i];
+    
+    bis[0] = 1; 
+    for(auto u: numb)
+        bis |= (bis << u);
 
-    int no = n, pos = 0;
-    while(no-- != 0){
-        pos = (pos + k) % (no + 1);
-        
-        int ans = *oset.find_by_order(pos);
-        cout << ans << ' ';
-        oset.erase(ans);
-    }
+    int cnt = 0;
+    for(int i = 1;  i < mak; i++)
+        if(bis[i]) cnt++;
+
+    cout << cnt << '\n';
+    for(int i = 1; i < mak; i++)
+        if(bis[i]) cout << i << ' ';
+    cout << endl;
 }
