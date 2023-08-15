@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+#define fi first
+#define se second
+#define pb push_back
+#define all(a) a.begin(), a.end()
+#define endl '\n'
+#define alf 'z' + 1
+
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef tree<int,null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> ordered_set;
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag,
+tree_order_statistics_node_update> ordered_multiset;
+//erase: oms.erase(oms.upper_bound(value))
+
+const int mod = 1e9 + 7;
+const int inf = 1e9 + 7;
+const int mak = 2e5 + 7;
+
+int n, k;
+vector<int> v;
+
+void get_input(){
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> n >> k;
+
+    v.resize(n);
+    for(int i = 0; i < n; i++)
+        cin >> v[i];
+}
+
+int main(){
+    get_input();
+    vector<int>dp(n);
+    for(int i = 0; i < k; i++)
+        dp[0] += v[i];
+
+    for(int i = 1; i <= n - k; i++)
+        dp[i] = dp[i - 1] - v[i - 1] + v[i + k - 1];
+
+    int ans = inf, idx;
+    for(int i = 0; i <= n - k; i++)
+        if(dp[i] < ans){
+            ans = dp[i];
+            idx = i + 1;
+        }
+
+    cout << idx << endl;
+}
