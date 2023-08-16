@@ -31,28 +31,35 @@ void get_input(){
     cin >> t;
 }
 
+inline int no(char c){
+    return c - '0';
+}
+
 bool solve(){
-    ll n, sum = 0;
-    cin >> n;
+    ll n;
+    string s, l, r;
 
-    vector<int> v(n);
-    for(int i = 0; i < n; i++){
-        cin >> v[i];
-        sum += v[i];
+    vector<vector<int>> pos(10);
+    cin >> s >> n >> l >> r;
+
+    for(int i = 0; i < s.size(); i++)
+        pos[no(s[i])].pb(i);
+
+    for(int i = 0, idx = 0, next_idx = 0; i < n; i++){
+        for(int j = l[i] - '0'; j <= r[i] - '0'; j++){
+            auto position = lower_bound(pos[j].begin(), pos[j].end(), idx);
+            if(position == pos[j].end()) return true;
+            next_idx = max(next_idx, *position + 1);
+        }
+
+        idx = next_idx;
     }
 
-    sort(all(v));
-    while(v.size() > 1){
-        if(sum - v.back() < v.back()) return false;
-        sum -= v.back();
-        v.pop_back();
-    }
-
-    return v.front() == 1;
+    return false;
 }
 
 int main(){
     get_input();
     while(t--)
-        cout << (solve() ? "yes" : "no") << endl;
+        cout << (solve() ? "YES" : "NO") << endl;
 }

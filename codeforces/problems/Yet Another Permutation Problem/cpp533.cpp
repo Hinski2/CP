@@ -31,28 +31,35 @@ void get_input(){
     cin >> t;
 }
 
-bool solve(){
-    ll n, sum = 0;
+void solve(){
+    int n;
     cin >> n;
 
-    vector<int> v(n);
-    for(int i = 0; i < n; i++){
-        cin >> v[i];
-        sum += v[i];
+    set<int> s;
+    for(int i = 1; i <= n; i++)
+        s.insert(i);
+
+    int target = n, subtarget;
+    while(target){
+        subtarget = target;
+        while(true){
+            if(s.contains(subtarget)){
+                cout << subtarget << ' ';
+                s.erase(subtarget);
+            }
+            if(subtarget % 2 != 0) break;
+            subtarget /= 2;
+        }
+        target--;
     }
 
-    sort(all(v));
-    while(v.size() > 1){
-        if(sum - v.back() < v.back()) return false;
-        sum -= v.back();
-        v.pop_back();
-    }
-
-    return v.front() == 1;
+    for(auto u: s)
+        cout << u << ' ';
+    cout << endl;
 }
 
 int main(){
     get_input();
     while(t--)
-        cout << (solve() ? "yes" : "no") << endl;
+        solve();
 }
