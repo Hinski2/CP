@@ -25,25 +25,26 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-int n;
+int n, k;
 vector<int> v;
 void get_input(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> n;
+    cin >> n >> k;
     v.resize(n);
     for(int i = 0; i < n; i++)
         cin >> v[i];
 }
 int main(){
     get_input();
-
-    vector<int> pts(2); 
-    int l = 0, r = n - 1;
-
+    int ans = 0, no = 0;
     for(int i = 0; i < n; i++){
-        if(v[l] > v[r]) pts[i % 2] += v[l++];
-        else pts[i % 2] += v[r--];
+        if(v[i] + k <= 5){
+            no++;
+            v[i] += k;
+        }
     }
 
-    cout << pts[0] << ' ' << pts[1] << endl;
+    ans += no / 3;
+
+    cout << ans << endl;
 }
