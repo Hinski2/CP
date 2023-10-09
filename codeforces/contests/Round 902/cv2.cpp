@@ -34,15 +34,14 @@ void get_input(){
 ll solve(){
     ll ans = 0, n, m, k; cin >> n >> m >> k;
     if(k == 1) ans = 1;
-    if(k == 2){
-        ans = n - 1 + m / n;
-        ans = max(ans, 0LL);
+    if(m <= n){
+        if(k == 2) ans = m;
+        if(k == 3) ans = 0;
     }
-    if(k == 3 && n < m){
-        ans = 1LL * (m / n - 1) * (n - 1) + m % n;
-        ans = max(ans, 0LL);
+    if(m > n){
+        if(k == 2) ans = n + (m - n) / n;
+        if(k == 3) ans = m - n - (m - n) / n;
     }
-    if(k > 3) ans = 0;
     return ans;
 }
 int main(){
