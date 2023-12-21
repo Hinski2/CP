@@ -40,28 +40,40 @@ tree_order_statistics_node_update> ordered_multiset;
 
 const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
-const int mak = 25'000;
+const ll mak = (ll) 1e15 + 7;
 
+vector<ll> recepie(3), ammount(3), price(3);
+ll cash;
 
-vector<int> prime;
-void make_primes(){
-    vector<bool> check(mak, 1);
-    for(int i = 2; i < mak; i++){
-        if(check[i]){
-            prime.pb(i);
-            for(int j = i * i; j < mak; j += i) check[j] = 0;
-        }
-    }
+bool check(ll mid){
+    ll cena = 0;
+    cena += price[0] * max(0LL, recepie[0] * mid - ammount[0]);
+    cena += price[1] * max(0LL, recepie[1] * mid - ammount[1]);
+    cena += price[2] * max(0LL, recepie[2] * mid - ammount[2]);
+
+    return cena <= cash;
 }
 
-int main(){
-    io; int t; cin >> t;
-    make_primes();
-    while(t--){
-        int d; cin >> d;
-        ll p = *lower_bound(prime.begin(), prime.end(), d + 1);
-        ll q = *lower_bound(prime.begin(), prime.end(), p + d);
 
-        cout << min(p * p * p, p * q) << endl;
+int main(){
+    io; string s; cin >> s;
+
+    for(auto u: s){
+        if(u == 'B') recepie[0]++;
+        else if(u == 'S') recepie[1]++;
+        else recepie[2]++;
     }
+
+    cin >> ammount;
+    cin >> price;
+    cin >> cash;
+
+    ll l = 0, r = mak, mid;
+    while(l < r){
+        mid = (l + r + 1) / 2;
+        if(check(mid)) l = mid;
+        else r = mid - 1;
+    }
+
+    cout << l << endl;
 }

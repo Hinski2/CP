@@ -40,28 +40,49 @@ tree_order_statistics_node_update> ordered_multiset;
 
 const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
-const int mak = 25'000;
+const int mak = 2e5 + 7;
 
+#define a "Alice"
+#define b "Bob"
+#define ti "Tie"
 
-vector<int> prime;
-void make_primes(){
-    vector<bool> check(mak, 1);
-    for(int i = 2; i < mak; i++){
-        if(check[i]){
-            prime.pb(i);
-            for(int j = i * i; j < mak; j += i) check[j] = 0;
-        }
+string solve(){
+    int n; cin >> n;
+    priority_queue<ll> even, odd;
+    for(int i = 0; i < n; i++){
+        int x; cin >> x;
+
+        if(x & 1) odd.push(x);
+        else even.push(x);
     }
+
+    ll alice = 0, bob = 0, i = 0;
+    while(!even.empty() || !odd.empty()){
+        if(i % 2 == 0){
+            if(!even.empty() && !odd.empty()){
+                if(even.top() >= odd.top()) alice += even.top(), even.pop();
+                else odd.pop();
+            }
+            else if(!even.empty()) alice += even.top(), even.pop();
+            else if(!odd.empty()) odd.pop();
+        }
+        else{
+            if(!even.empty() && !odd.empty()){
+                if(even.top() <= odd.top()) bob += odd.top(), odd.pop();
+                else even.pop();
+            }
+            else if(!even.empty()) even.pop();
+            else if(!odd.empty()) bob += odd.top(), odd.pop();
+        }
+    i ^= 1;
+    }
+
+    if(alice == bob) return ti;
+    return (alice > bob ? a : b);
 }
 
 int main(){
     io; int t; cin >> t;
-    make_primes();
-    while(t--){
-        int d; cin >> d;
-        ll p = *lower_bound(prime.begin(), prime.end(), d + 1);
-        ll q = *lower_bound(prime.begin(), prime.end(), p + d);
-
-        cout << min(p * p * p, p * q) << endl;
-    }
+    while(t--)
+        cout << solve() << endl;
 }

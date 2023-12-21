@@ -40,28 +40,29 @@ tree_order_statistics_node_update> ordered_multiset;
 
 const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
-const int mak = 25'000;
+const int mak = 2e5 + 7;
 
+void solve(){
+    int n; cin >> n;
+    vector<int> v(n); cin >> v;
 
-vector<int> prime;
-void make_primes(){
-    vector<bool> check(mak, 1);
-    for(int i = 2; i < mak; i++){
-        if(check[i]){
-            prime.pb(i);
-            for(int j = i * i; j < mak; j += i) check[j] = 0;
-        }
+    sort(all(v));
+    int turn = 1, t[2] = {(n - 1) / 2, (n - 1) / 2 + 1};
+    while(t[0] >= 0 || t[1] < n){
+        turn ^= 1;
+        if(t[turn] < 0 || t[turn] >= n) continue;
+
+        cout << v[t[turn]] << ' ';
+        if(turn == 0) t[0]--;
+        else t[1]++;
     }
+
+    cout << endl;
 }
 
 int main(){
     io; int t; cin >> t;
-    make_primes();
-    while(t--){
-        int d; cin >> d;
-        ll p = *lower_bound(prime.begin(), prime.end(), d + 1);
-        ll q = *lower_bound(prime.begin(), prime.end(), p + d);
+    while(t--)
+        solve();
 
-        cout << min(p * p * p, p * q) << endl;
-    }
 }
