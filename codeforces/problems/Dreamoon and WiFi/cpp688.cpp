@@ -60,5 +60,4 @@ int main(){
         c /= i;
     ans = (double)c / (1 << quest);
     cout << ans << endl;
-
 }
