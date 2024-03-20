@@ -42,23 +42,30 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-int solve(){
-    int n; cin >> n;
-    vector<int> v(n); cin >> v;
+void solve(){
+  int n; cin >> n;
+  vector<int> a(2*n); for(int i = 0; i < 2 * n; i++) cin >> a[i];
+  vector<int> even, odd;
+  for(int i = 0; i < 2 * n; i++){
+      if(a[i] & 1) odd.pb(i + 1);
+      else even.pb(i + 1);
+  }
 
-    for(int i = 0; i < n - 2; i++){
-        if(v[i] < 0) return 0;
-        int ts = v[i];
-        v[i] -= ts;
-        v[i + 1] -= ts * 2;
-        v[i + 2] -= ts;
-    }
-
-    return !v[n - 2] && !v[n - 1]
+  int cnt = 1;
+  for(int i = 0; i < even.size() - 1 && cnt < n; i += 2){
+      if(even.size() == 0) break;
+      cnt++;
+      cout <<  even[i] << ' ' << even[i + 1] << endl;
+  }
+  for(int i = 0; i < odd.size() - 1 && cnt < n; i += 2){
+      if(odd.size() == 0) break;
+      cnt++;
+      cout << odd[i] << ' ' << odd[i + 1] << endl;
+  }
 }
 
 int main(){
     io; int t; cin >> t;
     while(t--)
-        cout << yn << endl;
+        solve();
 }

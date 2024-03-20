@@ -42,23 +42,33 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-int solve(){
-    int n; cin >> n;
-    vector<int> v(n); cin >> v;
-
-    for(int i = 0; i < n - 2; i++){
-        if(v[i] < 0) return 0;
-        int ts = v[i];
-        v[i] -= ts;
-        v[i + 1] -= ts * 2;
-        v[i + 2] -= ts;
+void solve(){
+  int n; cin >> n;
+  if(n == 3){
+      cout << "NO" << endl;
+      return;
+  }
+  if(n == 2){
+      cout << "YES" << endl;
+      cout << "-1 1" << endl;
+      return;
+  }
+  cout << "YES" << endl;
+  if(n & 1 == 0)
+    for(int i = 0; i < n; i++)
+        cout << 1 * (i % 2 ? 1 : -1) << ' ';
+  else{
+    ll v[] = {-1 * (n - 1) / 2, (n - 2) / 2};
+    for(int i = 1; i <= n; i++){
+      cout << v[i % 2] << ' ';
     }
-
-    return !v[n - 2] && !v[n - 1]
+  }
+    
+  cout << endl;
 }
 
 int main(){
     io; int t; cin >> t;
     while(t--)
-        cout << yn << endl;
+        solve();
 }
