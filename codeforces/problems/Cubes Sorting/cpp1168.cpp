@@ -42,31 +42,18 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-ll n;
-vector<ll> obrazy;
+int solve(){
+    int n; cin >> n;
+    vector<int> v(n); cin >> v;
 
-ll oblicz(ll x, ll y){
-    if(x == 0 || y == 0) return 0;
-    for(int i = n - 1; i >= 0; i--){
-        ll a = x / obrazy[i];
-        ll b = y / obrazy[i];
-
-        if(a && b){
-            ll ans = a * b;
-            ans += oblicz(x - a * obrazy[i], b * obrazy[i]);
-            ans += oblicz(x, y - b * obrazy[i]);
-            return ans;
-        }
-    }
+    for(int i = 1; i < n; i++)
+        if(v[i - 1] <= v[i]) return 1;
+    
     return 0;
 }
 
 int main(){
-    io; int h, w; cin >> h >> w >> n;
-    obrazy.resize(n); cin >> obrazy;
-    if(h % obrazy[0] || w % obrazy[0])
-        cout << -1 << endl;
-    else
-        cout << oblicz(h, w) << endl;
-
+    io; int t; cin >> t;
+    while(t--)
+        cout << yn << endl;
 }

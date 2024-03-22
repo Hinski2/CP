@@ -1,19 +1,19 @@
 cd  
-cd programowanie/kody/c++/competitve/sprawdzenie/
+cd /mnt/c/Users/jakub/programowanie/competitve/sprawdzenie
 
 set -e
 g++ sprawdzenie.cpp -o sprawdzenie
 
-for((i = 1; i <= 100; ++i)); do
+for((i = 1; i <= 1000; ++i)); do
     cd testy
     cat $i.in > input_file
-    mv input_file ~/programowanie/kody/c++/competitve/sprawdzenie/
+    mv input_file /mnt/c/Users/jakub/programowanie/competitve/sprawdzenie/
 
     # cd ..
     # cd out/
 
     cat $i.out > correctAnswer
-    mv correctAnswer ~/programowanie/kody/c++/competitve/sprawdzenie/
+    mv correctAnswer /mnt/c/Users/jakub/programowanie/competitve/sprawdzenie/
 
     # cd ..
     cd ..

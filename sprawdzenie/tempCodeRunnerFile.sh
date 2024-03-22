@@ -1,1 +1,1 @@
-cat correctAnswer
+cd programowanie/kody/c++/competitve/sprawdzenie/
