@@ -1,6 +1,7 @@
 #!/bin/bash
 cd
-cd /home/kuba/programowanie/kody/c++/competitve/stressTest
+cd /mnt/c/Users/jakub/programowanie/competitve/stressTest
+
 
 set -e
 g++ lepszy.cpp -o lepszy

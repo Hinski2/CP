@@ -12,25 +12,6 @@ int main()
     // ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     srand(seed());
 
-    int n = rand() % 7 + 1, m = rand() % 3 + 1;
-    cout << n << ' ' << m << endl;
-
-    for(int i = 0; i < n; i++){
-        int x = rand() % 20 * (rand() % 2 ? 1 : -1);
-        cout << x << ' ';
-    }
-    cout << endl;
-
-    for(int i = 0; i < m; i++){
-        char op = (rand() % 2 ? 'Q' : 'U');
-        cout << op << ' ';
-
-        if(op == 'Q'){
-            int a = rand() % n, b = rand() % n;
-            while(a > b) a = rand() % n, b = rand() % n;
-            cout << a << ' ' << b << endl;
-        }
-        else
-            cout << rand() % n << ' ' << rand() % 20 * (rand() % 2 ? 1 : -1) << endl;
-    }
+   long long n = 1LL * rand() * rand();
+   cout << n << endl; 
 }

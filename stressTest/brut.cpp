@@ -29,24 +29,9 @@ const ull mak = 1ll * 1e9 * 1e9;
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    
-    ll n, m; cin >> n >> m;
-    ll arr[n] = {0};
 
-    for(int i = 0; i < n; i++)
-        cin >> arr[i]; 
-    while(m--){
-        char c; cin >> c;
-        if(c == 'Q'){
-            int a, b; cin >> a >> b;
-            ll suma = 0;
-            for(int i = a; i <= b; i++)
-                suma += arr[i];
-            cout << suma << endl;
-        }
-        else{
-            int n, x; cin >> n >> x;
-            arr[n] = x;
-        }
-    }
+    ll x; cin >> x;
+    for(int i = 0; i < 64; i++)
+        cout << ((x >> i) & 1);
+    cout << endl;
 }

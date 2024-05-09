@@ -1,68 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-typedef long long ll;
-ll base = 1;
-
-ll n, q;
-ll *tree;
-
-void update(int v, int x)
-{
-    v += base;
-    tree[v] = x;
-    v >>= 1;
-
-    while(v)
-    {
-        tree[v] += tree[v * 2] + tree[v * 2 + 1];
-        v >>= 1;
-    }
+void wypisz(uint64_t x){
+    for(int64_t i = 63; i >= 0; i--)
+        printf("%d", (x & (1LL << i)) >= 1);
+    printf("\n");
 }
 
-ll query(int a, int b)
-{
-    a += base;
-    b += base;
+int cnt(uint64_t x){
+    const uint64_t m1  = 0x5555555555555555; //binary: 0101...
+    const uint64_t m2  = 0x3333333333333333; //binary: 00110011..
+    const uint64_t m4  = 0x0f0f0f0f0f0f0f0f; //binary:  4 zeros,  4 ones ...
+    const uint64_t m8  = 0x00ff00ff00ff00ff; //binary:  8 zeros,  8 ones ...
+    const uint64_t m16 = 0x0000ffff0000ffff; //binary: 16 zeros, 16 ones ...
+    const uint64_t m32 = 0x00000000ffffffff; //binary: 32 zeros, 32 ones
 
-    ll ans = 0;
-    ans += tree[a];
-    if(a != b) ans += tree[b];
+    uint64_t y = x;
     
-    while(a >> 1 != b >> 1)
-    {
-        if(a % 2 == 0) ans += tree[a + 1];
-        if(b % 2 == 1) ans += tree[b - 1];
+    y = x;
+    y >>= 1;
+    y &= m1;
+    x &= m1;
+    x <<= 1;
+    x |= y;
 
-        a >>= 1;
-        b >>= 1;
-    }
+    y = x;
+    y >>= 2;
+    y &= m2;
+    x &= m2;
+    x <<= 2;
+    x |= y;
 
-    return ans;
+    y = x;
+    y >>= 4;
+    y &= m4;
+    x &= m4;
+    x <<= 4;
+    x |= y;
+
+    y = x;
+    y >>= 8;
+    y &= m8;
+    x &= m8;
+    x <<= 8;
+    x |= y;
+
+    y = x;
+    y >>= 16;
+    y &= m16;
+    x &= m16;
+    x <<= 16;
+    x |= y;
+
+    y = x;
+    y >>= 32;
+    y &= m32;
+    x &= m32;
+    x <<= 32;
+    x |= y;
+
+    wypisz(x);
+    return x;
 }
 
 int main(){
-    scanf("%lld %lld", &n, &q);
-    while(base < n) base *= 2;
-    tree = (ll*) malloc((base << 1) * sizeof(long long));
-    
-    for(int i = 0; i < n; i++)
-        scanf("%lld", &tree[i + base]);
-
-    for(int i = base - 1; i > 0; i--)
-        tree[i] = tree[i * 2] + tree[i * 2 + 1];
-        
-    while(q--){
-        char opt; scanf(" %c", &opt);
-        
-        if(opt == 'U'){
-            ll n, x; scanf("%lld %lld", &n, &x);
-            update(n, x);
-        }
-        else{
-            ll a, b; scanf("%lld %lld", &a, &b);
-            printf("%lld\n", query(a, b));
-        }
-    }
-    return 0;
+    uint64_t x;scanf("%ld", &x);
+    cnt(x);
 }
