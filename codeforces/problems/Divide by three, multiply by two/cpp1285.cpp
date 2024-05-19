@@ -6,14 +6,14 @@ using namespace std;
 using namespace __gnu_pbds;
 
 template<typename T>
-ostream& operator<<(ostream& os, const vector<T>& v){
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& v){
     for(const auto &u: v){
         os << u << ' ';
     }
     return os;
 }
 template<typename T>
-istream& operator>>(istream& is, vector<T>& v){
+std::istream& operator>>(std::istream& is, std::vector<T>& v){
     for(auto& u : v){
         is >> u;
     }
@@ -42,9 +42,8 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
     return is;
 }
 
-
 #define fi first
-#define se second
+#define se second 
 #define pb push_back
 #define all(a) a.begin(), a.end()
 #define endl '\n'
@@ -53,6 +52,7 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
 #define yn (solve() ? "YES" : "NO")
 
 typedef long long ll;
+typedef unsigned long long ull;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 typedef tree<int,null_type, less<int>, rb_tree_tag,
@@ -64,28 +64,48 @@ tree_order_statistics_node_update> ordered_multiset;
 const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
-pll m;
 
-bool ok(pll a, pll b, pll c){
-    pll ba = b - a;
-    pll cb = c - b;
+vector<ll> ans;
+bool sprawdz(ull x, set<ull> s, ull deep){
+    if(s.empty()){
+        return true;
+    }
 
-    return ba.fi * cb.se - cb.fi * ba.se == 0;
+    if(x % 3 == 0 && s.count(x / 3)){
+        s.erase(x / 3);
+        if(sprawdz(x / 3, s, deep + 1)){
+            ans[deep] = x / 3;
+            return 1;
+        }
+        s.insert(x / 3);
+    }
+    if(s.count(x * 2)){
+        s.erase(x * 2);
+        if(sprawdz(x * 2, s, deep + 1)){
+            ans[deep] = x * 2;
+            return 1;
+        }
+        s.insert(x * 2);
+    }
+
+    return 0;
 }
 
 int main(){
-    io; int n; cin >> n >> m.fi >> m.se;
-    vector<pll> v(n); cin >> v;
-    
+    io; int n; cin >> n;
+    vector<ull> v(n); cin >> v;
+    set<ull> s;
+    ans.resize(n);
     for(int i = 0; i < n; i++)
-        for(int j = i + 1; j < v.size(); j++)
-            if(ok(v[i], v[j], m)){
-                if(j == v.size() - 1) v.pop_back();
-                else{
-                    swap(v[j], v[v.size() - 1]);
-                    v.pop_back();
-                    j--;
-                }
-            }
-    cout << v.size() << endl;
+        s.insert(v[i]);
+
+    for(int i = 0; i < n; i++){
+        s.erase(v[i]);
+        if(sprawdz(v[i], s, 1)){
+            ans[0] = v[i];
+            break;
+        }
+        s.insert(v[i]);
+    }
+    cout << ans << endl;
 }
