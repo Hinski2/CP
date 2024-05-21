@@ -26,12 +26,8 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const ull mak = 1ll * 1e9 * 1e9;
 
-
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-
-    ll x; cin >> x;
-    for(int i = 0; i < 64; i++)
-        cout << ((x >> i) & 1);
-    cout << endl;
+    long long x; cin >> x;
+    cout<< x % 17 << endl;
 }
