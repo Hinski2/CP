@@ -1,38 +1,91 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
+using namespace __gnu_pbds;
 
-int m(long long n) {
-    long long maska = 0x0F0F0F0F0F0F0F0F;
-    long long m = (n >> 4) & maska;
-    n &= maska;
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& v){
+    for(const auto &u: v){
+        os << u << ' ';
+    }
+    return os;
+}
+template<typename T>
+std::istream& operator>>(std::istream& is, std::vector<T>& v){
+    for(auto& u : v){
+        is >> u;
+    }
+    return is;
+}
+template <typename T1, typename T2>
+pair<T1, T2> operator+(const pair<T1, T2>& p1, const pair<T1, T2>& p2) {
+    return make_pair(p1.first + p2.first, p1.second + p2.second);
+}
+template <typename T1, typename T2>
+pair<T1, T2> operator-(const pair<T1, T2>& p1, const pair<T1, T2>& p2) {
+    return make_pair(p1.first - p2.first, p1.second - p2.second);
+}
+template <typename T1, typename T2>
+pair<T1, T2> operator*(const pair<T1, T2>& p1, const pair<T1, T2>& p2) {
+    return make_pair(p1.first * p2.first, p1.second * p2.second);
+}
+template <typename T1, typename T2>
+ostream& operator<<(ostream& os, const pair<T1, T2>& p) {
+    os << p.first << ' ' << p.second;
+    return os;
+}
+template <typename T1, typename T2>
+istream& operator>>(istream& is, pair<T1, T2>& p) {
+    is >> p.first >> p.second;
+    return is;
+}
 
-    n += (n >> 8);
-    n += (n >> 16);
-    n += (n >> 32);
+#define fi first
+#define se second
+#define pb push_back
+#define all(a) a.begin(), a.end()
+#define endl '\n'
+#define alf 'z' + 1
+#define io ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+#define yn (solve() ? "YES" : "NO")
 
-    m += (m >> 8);
-    m += (m >> 16);
-    m += (m >> 32);
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef tree<int,null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> ordered_set;
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag,
+tree_order_statistics_node_update> ordered_multiset;
+//erase: oms.erase(oms.upper_bound(value))
 
-    n &= 0xFF;
-    m &= 0xFF;
+const int mod = 1e9 + 7;
+const int inf = 1e9 + 7;
+const int mak = 2e5 + 7;
 
-    n -= m;
-    if(n < 0)
-        n += 136;
-    
-    m = (n >> 4) & 0xF;
-    n &= 0xF;
+int solve(){
 
-    n -= m;
-    if(n < 0)
-        n += 17;
+    int n; cin >> n;
+    int no[10] = {0};
+    vector<int> v;
+    for(int i = 0, x; i < n; i++){
+        cin >> x; x %= 10;
+        if(no[x] < 3){
+            no[x]++;
+            v.pb(x);
+        }
+    }
 
-    return n;
+    for(int i = 0; i < v.size(); i++)
+        for(int j = i + 1; j < v.size(); j++)
+            for(int k = j + 1; k < v.size(); k++)
+                if((v[i] + v[j] + v[k]) % 10 == 3) return 1;
+    return 0;
 }
 
 int main(){
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    long long x; cin >> x;
-    cout << m(x) << endl;
+    io; int t; cin >> t;
+    while(t--)
+        cout << yn << endl;
 }

@@ -64,24 +64,30 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-int solve(){
+ll sum(vector<ll> &v){
+    ll ans = 0;
+    for(auto u: v) ans += u;
+    return ans;
+}
 
-    int n; cin >> n;
-    int no[10] = {0};
-    vector<int> v;
-    for(int i = 0, x; i < n; i++){
-        cin >> x; x %= 10;
-        if(no[x] < 3){
-            no[x]++;
-            v.pb(x);
-        }
+ll kadne(ll l, ll r, vector<ll> &v){
+    ll local = 0, global = LONG_LONG_MIN;
+    for(int i = l; i < r; i++){
+        local += v[i];
+        local = max(local, 0ll);
+        global = max(global, local);
     }
 
-    for(int i = 0; i < v.size(); i++)
-        for(int j = i + 1; j < v.size(); j++)
-            for(int k = j + 1; k < v.size(); k++)
-                if((v[i] + v[j] + v[k]) % 10 == 3) return 1;
-    return 0;
+    return global;
+}
+
+
+int solve(){
+    int n; cin >> n;
+    vector<ll> v(n); cin >> v;
+    ll suma = sum(v);
+
+    return kadne(0, n - 1, v) < suma && kadne(1, n, v) < suma;
 }
 
 int main(){
