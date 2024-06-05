@@ -43,7 +43,7 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
 }
 
 #define fi first
-#define se second
+#define se second 
 #define pb push_back
 #define all(a) a.begin(), a.end()
 #define endl '\n'
@@ -64,46 +64,41 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
+int cnt_peeks(int n, int k, const vector<int> &v){
+    int cnt = 0;
+    for(int i = 1; i < k - 1; i++)
+        if(v[i - 1] < v[i] && v[i] > v[i + 1]) cnt++;
+    return cnt;
+}
+
 void solve(){
-    int n; cin >> n;
-    string s; cin >> s;
+    int n, k; cin >> n >> k;
+    vector<int> v(n); cin >> v;
+    list<int> l; for(int i = 0; i < k; i++) l.push_back(v[i]);
 
-    int cnt = 1;
-    vector<int> free_one, free_zero;
-    vector<int> ans(n);
-    for(int i = 0; i < n; i++){
-        int x = s[i] - '0';
+    int now, ans, where = 0; now = ans = cnt_peeks(n, k, v);
+    for(int i = k; i < n; i++){
+        int first = l.front(); l.pop_front();
+        int second = l.front();
+        int third = *next(l.begin());
 
-        if(x == 0){
-            if(free_zero.empty()){
-                ans[i] = cnt++;
-                free_one.pb(ans[i]);
-            }
-            else{
-                ans[i] = free_zero.back();
-                free_zero.pop_back();
-                free_one.pb(ans[i]);
-            }
-        }
-        else{
-            if(free_one.empty()){
-                ans[i] = cnt++;
-                free_zero.pb(ans[i]);
-            }
-            else{
-                ans[i] = free_one.back();
-                free_one.pop_back();
-                free_zero.pb(ans[i]);
-            }
+        if(first < second && second > third) now--;
+
+        first = *prev(l.end(), 2);
+        second = l.back();
+        third = v[i]; l.push_back(v[i]);
+
+        if(first < second && second > third) now++;
+        if(ans < now){
+            ans = now;
+            where = i - k + 1;
         }
     }
 
-    cout << cnt - 1 << endl;
-    cout << ans << endl;
+    cout << ans + 1 << ' ' << where + 1 << endl;
 }
-
 int main(){
     io; int t; cin >> t;
     while(t--)
         solve();
-} 
+}
