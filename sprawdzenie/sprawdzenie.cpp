@@ -42,31 +42,60 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-ll n;
-vector<ll> obrazy;
-
-ll oblicz(ll x, ll y){
-    if(x == 0 || y == 0) return 0;
-    for(int i = n - 1; i >= 0; i--){
-        ll a = x / obrazy[i];
-        ll b = y / obrazy[i];
-
-        if(a && b){
-            ll ans = a * b;
-            ans += oblicz(x - a * obrazy[i], b * obrazy[i]);
-            ans += oblicz(x, y - b * obrazy[i]);
-            return ans;
-        }
+void wypisz(vector<int> &v, int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++)
+            cout << v[i * n + j] << ' ';
+        cout << endl;
     }
-    return 0;
+    cout << endl;
 }
 
-int main(){
-    io; int h, w; cin >> h >> w >> n;
-    obrazy.resize(n); cin >> obrazy;
-    if(h % obrazy[0] || w % obrazy[0])
-        cout << -1 << endl;
-    else
-        cout << oblicz(h, w) << endl;
 
+int main(){
+    int n = 5;
+    vector<int> a(n * n), b(n * n);
+    for(int i = 0; i < n; i++)
+        a[i] = a[i * n] = 0;
+
+    for (long i = 1; i < n; i++)
+        for (long j = 1; j < n; j++)
+            a[j * n + i] = i * j;
+
+    wypisz(a, n);
+
+    for (long i = 1; i < n; i++)
+        for (long j = 1; j < n; j++)
+            b[i * n + j] = a[i * n + j] + a[(i - 1) * n + (j - 1)];
+
+    wypisz(b, n);
+
+    //v2
+    long itr1 = 0; 
+    for (long i = 0; i < n; i++){
+        a[itr1] = a[i] = 0;
+        itr1 += n;
+    }
+
+    itr1 = n + 1;   
+    long itr2 = 0;  
+    long val = 0;   //dodanie zmiennej pomocniczej
+
+    for (long i = 1; i < n; i++){
+        val = i;
+        for (long j = 1; j < n; j++){
+            a[itr1] = val;
+            val += i;
+
+            b[itr1] = a[itr1] + a[itr2];
+            itr1++;
+            itr2++;
+        }
+
+        // przejście do następnej lini 
+        itr1++;
+        itr2++;
+    }
+    wypisz(a, n);
+    wypisz(b, n);
 }
