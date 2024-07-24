@@ -51,51 +51,19 @@ void wypisz(vector<int> &v, int n){
     cout << endl;
 }
 
+int tab[9][9];
+int idx(int x, int y){
+    return 3 * (x / 3) + y / 3;
+}
 
 int main(){
-    int n = 5;
-    vector<int> a(n * n), b(n * n);
-    for(int i = 0; i < n; i++)
-        a[i] = a[i * n] = 0;
+    for(int i = 0; i < 9; i++)
+        for(int j = 0; j < 9; j++)
+            tab[i][j] = idx(i, j);
 
-    for (long i = 1; i < n; i++)
-        for (long j = 1; j < n; j++)
-            a[j * n + i] = i * j;
-
-    wypisz(a, n);
-
-    for (long i = 1; i < n; i++)
-        for (long j = 1; j < n; j++)
-            b[i * n + j] = a[i * n + j] + a[(i - 1) * n + (j - 1)];
-
-    wypisz(b, n);
-
-    //v2
-    long itr1 = 0; 
-    for (long i = 0; i < n; i++){
-        a[itr1] = a[i] = 0;
-        itr1 += n;
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 9; j++)
+            cout << tab[i][j];
+        cout << endl;
     }
-
-    itr1 = n + 1;   
-    long itr2 = 0;  
-    long val = 0;   //dodanie zmiennej pomocniczej
-
-    for (long i = 1; i < n; i++){
-        val = i;
-        for (long j = 1; j < n; j++){
-            a[itr1] = val;
-            val += i;
-
-            b[itr1] = a[itr1] + a[itr2];
-            itr1++;
-            itr2++;
-        }
-
-        // przejście do następnej lini 
-        itr1++;
-        itr2++;
-    }
-    wypisz(a, n);
-    wypisz(b, n);
 }
