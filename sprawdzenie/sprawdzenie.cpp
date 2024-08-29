@@ -42,28 +42,6 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-void wypisz(vector<int> &v, int n){
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++)
-            cout << v[i * n + j] << ' ';
-        cout << endl;
-    }
-    cout << endl;
-}
-
-int tab[9][9];
-int idx(int x, int y){
-    return 3 * (x / 3) + y / 3;
-}
-
 int main(){
-    for(int i = 0; i < 9; i++)
-        for(int j = 0; j < 9; j++)
-            tab[i][j] = idx(i, j);
-
-    for(int i = 0; i < 9; i++){
-        for(int j = 0; j < 9; j++)
-            cout << tab[i][j];
-        cout << endl;
-    }
+    
 }

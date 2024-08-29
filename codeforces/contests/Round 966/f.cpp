@@ -65,7 +65,7 @@ const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
 int solve(){
-    int n, k;
+    int n, k; cin >> n >> k;
     vector<pii> v(n); for(int i = 0; i < n; i++) cin >> v[i].fi >> v[i].se;
     priority_queue<pii, vector<pii>, greater<pii>> pq;
     for(auto [x, y] : v){
@@ -76,13 +76,16 @@ int solve(){
     int ans = 0, i = 0;
     while(i < k && !pq.empty()){
         auto [x, y] = pq.top(); pq.pop();
-        ans += x;
+        if(x == 1 && y == 1) i += 2;
+        else i += 1;
+
+        ans += y;
         x--;
         if(x < y) swap(x, y);
         if(y != 0) pq.push({x, y});
-        i++;
-        if(i == k) return ans;
     }
+
+    if(i >= k) return ans;
     return -1;
 }
 int main(){
