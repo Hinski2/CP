@@ -83,5 +83,5 @@ int solve(){
 int main(){
     io; int t; cin >> t;
     while(t--)
-        cout << solve() << endl;
+        cout << solve() << endl; 
 }
