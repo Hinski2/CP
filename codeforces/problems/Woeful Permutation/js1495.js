@@ -21,7 +21,7 @@ process.stdin.on("end", (_) => {
  
 function readline() {
     return inputString[currentLine++];
-// }
+}
 
 function solve(){
     let n = parseInt(readline())
