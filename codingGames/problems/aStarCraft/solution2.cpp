@@ -1,3 +1,7 @@
+#pragma GCC optimize("Ofast,inline,tracer")
+#pragma GCC optimize("unroll-loops,vpt,split-loops,unswitch-loops") 
+#pragma GCC target("arch=haswell,tune=haswell")
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -66,10 +70,23 @@ vector<vector<position_and_tile>> possible_moves;
 
 //! utils
 //* time section
-std::chrono::steady_clock::time_point T0;
-inline int elapsed_time(){
-    return chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - T0).count();
+uint64_t T0;
+
+extern "C" {
+    int gettimeofday(struct timeval* tv, void* tz);
 }
+
+uint64_t getTime() { //return time in microsecunds
+    struct timeval t;
+    gettimeofday(&t, nullptr);
+    return static_cast<uint64_t>(t.tv_sec) * 1000000UL + static_cast<uint64_t>(t.tv_usec);
+}
+
+inline int elapsed_time(){
+        return getTime() - T0;
+}
+
+
 
 //* tile section
 constexpr char char_of_tile_enum[] = {'U', 'L', 'D', 'R', '.', '#'};
@@ -183,7 +200,7 @@ public:
     //! constructor and destructor
     Game(){
             get_input();
-            T0 = chrono::steady_clock::now();       // start timer 
+            T0 = getTime();      // start timer 
             find_empty_tiles();
 
             solution.arrangement.resize(empty_tiles.size());
@@ -195,12 +212,44 @@ public:
     ~Game(){}
 
     //! utils
-    // finds empty tiles :)
+    inline bool has_a_neighbour_arrow(int x, int y){
+        for(auto u: dir){
+            u.x += x; set_x(u.x);
+            u.y += y; set_y(u.y);
+            if(grid[x][y] < 4) return 1;
+        }
+        return 0;
+    }
+
+    inline pair<int, int> surrounding_void(int x, int y){
+        pair<int, int> ans = {0, 0};
+        for(auto u: dir){
+            u.x += x; set_x(u.x);
+            u.y += y; set_y(u.y);
+            if(grid[u.x][u.y] == Void){
+                ans.first += (int_of_x_tile_enum[u.dir] != 0);
+                ans.second += (int_of_y_tile_enum[u.dir] != 0);
+            }
+        }
+
+        return ans;
+    }
+
+    // finds appropriate empty tiles, here i reduce search space 
     void find_empty_tiles(){
-        for(int i = 0; i < N; i++)
-            for(int j = 0; j < M; j++)
-                if(grid[i][j] == Empty)
-                    empty_tiles.push_back({i, j});
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++){
+                if(grid[i][j] != Empty) continue;
+                // check numb of surrounding void
+                auto [x, y] = surrounding_void(i, j);
+
+                // if (2, 0) or (0, 2) or (0, 0) and !has_a_neighbour_arrow skipp
+                if(((x == 2 && y == 0) || (x == 0 && y == 2) || (x == 0 && y == 0)) && !has_a_neighbour_arrow(i, j)) continue;
+
+                // it's a good place to put arrow
+                empty_tiles.push_back({i, j});
+            }
+        }
     }
 
     void generate_possible_moves(){
@@ -258,7 +307,7 @@ int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     Game game;                              // create game, get input and finds empty tiles
 
-    while(elapsed_time() < 970){
+    while(elapsed_time() < 990'000){
         game.solve();
     }
     
