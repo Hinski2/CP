@@ -204,7 +204,8 @@ public:
         // opt 1: a - landing pad, b - lunar module
         if(buildings[id_a].type == 0 && buildings[id_b].type){
             ans = buildings[id_a].sum_of_astronaut_type[buildings[id_b].type];
-            ans += color[find(id_a)].sum_of_modules_type[buildings[id_b].type];
+            for(auto u: G[id_a])
+                ans += buildings[u.to].sum_of_astronaut_type[buildings[id_b].type] * 2;
             if(ans == 0) ans--; 
         }
 
@@ -280,28 +281,17 @@ public:
             }
         }
 
-        for(auto u: lunar_modules_id){
-            for(auto w: lunar_modules_id){
-                if(u == w) continue;
-                if(ok_connection(u, w)) possible_connections.push_back({evaluate_connection(u, w), u, w});
-            }
-        }
-
         sort(possible_connections.begin(), possible_connections.end(), cmp_for_connection_pts);
-        set<int> upgraded_id; 
 
-        for(int i = 0; i < possible_connections.size(); i++){
+        for(int i = 0, j = 0; i < possible_connections.size() && j < 1; i++){
             int &a = possible_connections[i].b1;
             int &b = possible_connections[i].b2;
             if(possible_connections[i].pts == -1) continue;
             if(cost_of_tube_connection(buildings[a].coord, buildings[b].coord) + cost_of_pod > resorces) continue;
             if(!ok_connection(a, b)) continue;
-            if(upgraded_id.count(a) || upgraded_id.count(b)) continue;
 
             change = true;
-            upgraded_id.insert(a);
-            upgraded_id.insert(b);
-
+            j++;
             resorces -= cost_of_tube_connection(buildings[a].coord, buildings[b].coord) + cost_of_pod;
             num_of_routs++;
             G[a].push_back({b, 1});
@@ -316,28 +306,48 @@ public:
 
     // 2. upgrade tunels (only between two landing pads)
     void stage2(){
-        vector<int> landing_pads_id;
-        for(int i = 0; i < num_of_buildings; i++)
-            if(buildings[i].type == 0) landing_pads_id.push_back(i);
+        // separate landing pads and lunar modules
+        vector<int> landin_pads_id;
+        vector<int> lunar_modules_id;
+        for(int i = 0; i < num_of_buildings; i++){
+            if(G[i].size() >= 5 - buildings[i].has_teleport) continue;  // building can have maxiamally 5 tube conectinos
+            if(buildings[i].type == 0) landin_pads_id.push_back(i);
+            else lunar_modules_id.push_back(i);
+        }
 
-        vector<connection_cost> possible_connections;
-        for(auto u: landing_pads_id){
-            for(auto w: G[u]){
-                if(buildings[w.to].type != 0 || w.capaicty == 0) continue; // it's not a landin pad or it's a teleport connection
-                possible_connections.push_back({(w.capaicty + 1) * cost_of_tube_connection(buildings[u].coord, buildings[w.to].coord), u, w.to});
+        vector<connection_pts> possible_connections;
+        // connections landin_pad <-> lunar module
+        for(auto u: landin_pads_id)
+            for(auto w: lunar_modules_id)
+                if(ok_connection(u, w)) possible_connections.push_back({evaluate_connection(u, w), u, w});
+        
+        // connections landin_pad <-> landing pad
+        for(auto u: landin_pads_id){
+            for(auto w: landin_pads_id){
+                if(u == w) continue;
+                if(ok_connection(u, w)) possible_connections.push_back({evaluate_connection(u, w), u, w});
             }
         }
 
-        sort(possible_connections.begin(), possible_connections.end(), cmp_for_connection_cost);
-        for(int i = 0; i < possible_connections.size() && possible_connections[i].cost + cost_of_pod <= resorces; i++){
+        sort(possible_connections.begin(), possible_connections.end(), cmp_for_connection_pts);
+
+        for(int i = 0; i < possible_connections.size(); i++){
             int &a = possible_connections[i].b1;
             int &b = possible_connections[i].b2;
+            if(possible_connections[i].pts == -1) continue;
+            if(cost_of_tube_connection(buildings[a].coord, buildings[b].coord) + cost_of_pod > resorces) continue;
+            if(!ok_connection(a, b)) continue;
 
             change = true;
-            resorces -= possible_connections[i].cost + cost_of_pod;
-            for(auto &u: G[a]) if(u.to == b) u.capaicty++;
-            for(auto &u: G[b]) if(u.to == a) u.capaicty++;
-            cout << "UPGRADE " << a << ' ' << b << ';';
+            resorces -= cost_of_tube_connection(buildings[a].coord, buildings[b].coord) + cost_of_pod;
+            num_of_routs++;
+            G[a].push_back({b, 1});
+            G[b].push_back({a, 1});
+            onion(a, b);
+            cout << "TUBE " << a << ' ' << b << ';';
+
+            num_of_pods++;
+            cout << "POD " << num_of_pods << ' ' << a << ' ' << b << ' ' << a << ';';
         }
     }
 
@@ -368,10 +378,14 @@ public:
         for(int i = 0; i < posibilities.size() && resorces >= cost_of_teleport; i++){
             int &a = posibilities[i].b1;
             int &b = posibilities[i].b2;
+            if(buildings[a].has_teleport || buildings[b].has_teleport) continue;
 
             change = true;
             resorces -= cost_of_teleport;
             num_of_routs++;
+            buildings[a].has_teleport = true;
+            buildings[b].has_teleport = true;
+
             G[a].push_back({b, 0});
             G[b].push_back({a, 0});
             onion(a, b);
@@ -420,8 +434,17 @@ public:
         change = false;
         if(num_of_pods + 1 < 500)
             stage1();
+        if(num_of_pods + 1 < 500)
+            stage1();
+        if(num_of_pods + 1 < 500)
+            stage1();
+
+        if(num_of_pods + 1 < 500)
+            stage2();
 
         stage3(); // make teleports 
+        if(num_of_pods + 1 < 500)
+            stage4();
 
         if(change == false)
             cout << "WAIT";

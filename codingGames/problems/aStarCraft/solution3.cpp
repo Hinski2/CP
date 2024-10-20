@@ -1,6 +1,6 @@
-#pragma GCC optimize("Ofast,inline,tracer")
-#pragma GCC optimize("unroll-loops,vpt,split-loops,unswitch-loops") 
-#pragma GCC target("arch=haswell,tune=haswell")
+// #pragma GCC optimize("Ofast,inline,tracer")
+// #pragma GCC optimize("unroll-loops,vpt,split-loops,unswitch-loops") 
+// #pragma GCC target("arch=haswell,tune=haswell")
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -10,6 +10,10 @@ static const int N = 10;
 static const int M = 19;
 static const int moves_no = 4;
 static const int max_tiles = 190;
+static const int time_limit = 990'000;
+
+static double initial_temperature = 10000.0;
+static double cooling_reate = 0.999;
 
 //! enums
 enum tile{
@@ -210,6 +214,8 @@ public:
             solution.score = 0, best_solution.score = 0;
 
             generate_possible_moves();
+            solution.generate_arrangemetn();
+            solution.evaluate_score();
     }
     ~Game(){}
 
@@ -254,6 +260,13 @@ public:
         }
     }
 
+    double P(int old_score, int new_score, double T){
+        if(new_score > old_score)
+            return 1.0;
+        else 
+            return exp((new_score - old_score) / T);
+    }
+
     void generate_possible_moves(){
         possible_moves.resize(empty_tiles.size());
         for(int i = 0; i < empty_tiles.size(); i++){
@@ -292,9 +305,25 @@ public:
     //! main methods
     // create solution, make simulation and overwrite best_solution
     void solve(){
-        solution.generate_arrangemetn();
-        solution.overwrite_grid();
+        int change_idx = my_random() % empty_tiles.size();
+        int solution_old_score = solution.score;
+        tile old_tile = solution.arrangement[change_idx].dir;
+
+        // make change
+        solution.arrangement[change_idx].dir = possible_moves[change_idx][my_random() % possible_moves[change_idx].size()].dir;
+        grid[solution.arrangement[change_idx].x][solution.arrangement[change_idx].y] = solution.arrangement[change_idx].dir;
+        
         solution.evaluate_score();
+        double T = (double) elapsed_time() / time_limit;
+
+        //we dont keep it 
+        if(solution.score <= solution_old_score){
+            if(P(solution_old_score, solution.score, T) <= (double) my_random() / UINT32_MAX){
+                solution.score = solution_old_score;
+                solution.arrangement[change_idx].dir = old_tile;
+                grid[solution.arrangement[change_idx].x][solution.arrangement[change_idx].y] = old_tile;
+            }
+        }
 
         if(solution.score > best_solution.score){
             best_solution = solution;
@@ -309,9 +338,12 @@ int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     Game game;                              // create game, get input and finds empty tiles
 
-    while(elapsed_time() < 990'000){
+    int i = 0;
+    while(i++ < 100){
         game.solve();
     }
     
     game.best_solution.print();
 }
+
+// TODO simulation
