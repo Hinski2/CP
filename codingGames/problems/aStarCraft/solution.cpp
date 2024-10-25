@@ -129,12 +129,6 @@ inline tile tile_enum_of_char(int c){
     return Void;
 }
 
-inline bool adventure(int x, int y){
-    if(0 < x || x >= N - 2 || 0 < y || y >= M - 2) return 0;
-    if(grid[x - 1][y - 1] == Void and grid[x - 1][y + 1] == Void and grid[x + 1][y - 1] == Void and grid[x + 1][y + 1] == Void) return 1;
-    return 0;
-}
-
 inline bool tiles_contain(int x, int y){
     return empty_tiles_grid[x][y];
 }
@@ -277,7 +271,7 @@ public:
                 auto [x, y] = surrounding_void(i, j);
 
                 // if (2, 0) or (0, 2) or (0, 0) and !has_a_neighbour_arrow skipp
-                if(((x == 2 && y == 0) || (x == 0 && y == 2) || (x == 0 && y == 0)) && !has_a_neighbour_arrow(i, j)) continue;
+                if(((x == 0 && y == 0)) && !has_a_neighbour_arrow(i, j)) continue;
 
                 // it's a good place to put arrow
                 empty_tiles.push_back({i, j});
@@ -290,16 +284,10 @@ public:
             if(!tiles_contain(x, y) and grid[x][y] == Empty) empty_tiles.push_back({x, y});
 
         // add neightbours to empty tiles
-        // for(int i = 0; i < N; i++)
-        //     for(int j = 0; j < M; j++)
-        //         if(grid[i][j] == Empty and !tiles_contain(i, j) and neighbour_of_empty_tile_element(i, j))
-        //             empty_tiles.push_back({i, j}); // I don't add empty_tiles_grid becaus I use it only to in this loop
-
-        // hypersonick optimise
         for(int i = 0; i < N; i++)
             for(int j = 0; j < M; j++)
-                if(grid[i][j] == Empty and adventure(i, j) and !tiles_contain(i, j)) 
-                    empty_tiles.push_back({i, j});
+                if(grid[i][j] == Empty and !tiles_contain(i, j) and neighbour_of_empty_tile_element(i, j))
+                    empty_tiles.push_back({i, j}); // I don't add empty_tiles_grid becaus I use it only to in this loop
     }
 
     double P(int old_score, int new_score, double T){
@@ -388,3 +376,7 @@ int main(){
 }
 
 // TODO remember to change elapsed_time_debug() -> elapsed_time()
+
+// lepsza heura:
+    // możesz dostawiać strzałki na pozycji startowych robotów
+    // dodawaj strzałki graniczące z odpowiednimi miejscami
