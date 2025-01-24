@@ -42,9 +42,8 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
     return is;
 }
 
-#define fi v[0]
-#define se v[1]
-#define th v[2]
+#define fi first
+#define se second
 #define pb push_back
 #define all(a) a.begin(), a.end()
 #define endl '\n'
@@ -66,19 +65,5 @@ const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
 int main(){
-    io; vector<ll> v(3); cin >> v;
-    sort(all(v), greater<ll>());
-
-    ll ans = 0;
-    // etap pierwszy
-    while(fi - th >= 2){
-        ll ile = min(fi / 2, se);
-        fi -= ile * 2, se -= ile;
-        sort(all(v), greater<ll>());
-        ans += ile;
-    }
-
-    // różnią się co najwyżej o jeden
-    ans += th;
-    cout << ans << endl;
+    io;
 }
