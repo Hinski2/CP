@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
-// #pragma GCC optimize("Ofast,inline,tracer")
-// #pragma GCC optimize("unroll-loops,vpt,split-loops,unswitch-loops") 
-// #pragma GCC target("arch=haswell,tune=haswell")
+#pragma GCC optimize("Ofast,inline,tracer")
+#pragma GCC optimize("unroll-loops,vpt,split-loops,unswitch-loops") 
+#pragma GCC target("arch=haswell,tune=haswell")
 
 struct struct_board{
     int vis, win, player;
@@ -21,9 +21,10 @@ namespace globals{
     };
 
     // constexpr
-    constexpr bool debug = true;
+    constexpr bool debug = false;
+    constexpr int no_simulates = 5;
     constexpr std::pair<int, int> dir[] = {{1, 0}, {0, -1}, {0, 1}, {-1, 0}};
-    constexpr int max_malloc_size = 100000;
+    constexpr int max_malloc_size = 125000;
     const std::string string_of_dir[] = {"DOWN", "LEFT", "RIGHT", "UP"};
 
     //var
@@ -104,7 +105,7 @@ namespace game{
     double uct(struct_board *board);
     struct_board *select(struct_board *board);
     void expand(struct_board *board);
-    int random_simulate(struct_board *board);
+    std::pair<int, int> random_simulate(struct_board *board);
     void backpropagation(struct_board *board, int wins);
     void free_board(struct_board *board);
 };
@@ -131,7 +132,7 @@ namespace game{
     void backpropagation(struct_board *board, int wins){
         while(board){
             board -> win += wins;
-            board -> vis += 4;
+            board -> vis += 4 * globals::no_simulates;
             board = board -> prev;
         }
     }
@@ -154,9 +155,14 @@ namespace game{
                 next -> player = board -> player ^ 1;
                 next -> next[0] = next -> next[1] = next -> next[2] = next -> next[3] = nullptr;
 
-                int score = random_simulate(next) == globals::me;
+                int score = 0;
+                for(int s = 0; s < globals::no_simulates; s++){
+                    std::pair<int, int> out = random_simulate(next);
+                    score += out.first == globals::me ? out.second : 0;
+                }
+
                 next -> win = score;
-                next -> vis = 1;
+                next -> vis = globals::no_simulates;
                 wins += score;
             }
         }
@@ -187,8 +193,10 @@ namespace game{
     }
 
     double uct(struct_board *board){
-        double ans = (double) board -> win / board -> vis;
-        ans += (double) 4.0 * std::sqrt(std::log( board -> prev ? board -> prev -> vis : board -> vis) / board -> vis);
+        int wins = board -> player != board_malloc::root -> player ? board -> win : board -> vis - board -> win;
+
+        double ans = (double) wins / board -> vis;
+        ans += (double) 1.41 * std::sqrt(std::log( board -> prev ? board -> prev -> vis : board -> vis) / board -> vis);
         return ans;
     }
 
@@ -226,6 +234,8 @@ namespace game{
                 else 
                     board_malloc::root -> matrix[i][j / 2] = globals::empty;
         }
+
+        utils::T0 = utils::get_time();
     }
 
     void get_input(){
@@ -267,14 +277,16 @@ namespace game{
         }
 
         board_malloc::root -> prev = nullptr;
-        if(found == false){
-            std::cout << "ojoj " << std::endl;
-            exit(1);
-        }
+        // if(found == false){
+        //     std::cout << "ojoj " << std::endl;
+        //     exit(1);
+        // }
+
+        utils::T0 = utils::get_time();
     }
 
     void make_moves(){
-        for(int i = 0; i < 1000 and board_malloc::free_idx > 4; i++){
+        for(int i = 0; utils::elapsed_time() < 90'000 and board_malloc::free_idx > 4 * globals::no_simulates; i++){
             struct_board *selected = select(board_malloc::root);
             expand(selected);
         }
@@ -308,7 +320,7 @@ namespace game{
         board_malloc::free_board(board);
     }
 
-    int random_simulate(struct_board *board){
+    std::pair<int, int> random_simulate(struct_board *board){
         struct_board copy = *board;
 
         while(copy.no_players[0] and copy.no_players[1]){
@@ -317,7 +329,7 @@ namespace game{
             copy.player ^= 1;
         }
 
-        return copy.no_players[0] ? 0 : 1;
+        return copy.no_players[0] ? std::make_pair(0, copy.no_players[0]) : std::make_pair(1, copy.no_players[1]);
     }
 
     void print_move(){
@@ -328,8 +340,8 @@ namespace game{
                 arg_ans = i;
                 ans_val = board_malloc::root -> next[i] -> win;
             }
-
-        std::cout << globals::string_of_dir[arg_ans] << std::endl;
+            
+        std::string s = globals::string_of_dir[arg_ans];
 
         // now we can free board
         for(const int &i: {0, 1, 2, 3}){
@@ -341,6 +353,8 @@ namespace game{
 
         board_malloc::free_board(board_malloc::root);
         board_malloc::root = board_malloc::root -> next[arg_ans];
+
+        std::cout << s << std::endl;
     }
 
     void shift_left(struct_board *board, int l, int r, int i){
