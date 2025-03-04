@@ -50,20 +50,50 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
 #define alf 'z' + 1
 #define io ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #define yn (solve() ? "YES" : "NO")
+#define int ll
 
 typedef long long ll;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
-typedef tree<int,null_type, less<int>, rb_tree_tag,
+typedef tree<int,null_type, less<int>, rb_tree_tag,\
 tree_order_statistics_node_update> ordered_set;
-typedef tree<int, null_type, less_equal<int>, rb_tree_tag,
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag,\
 tree_order_statistics_node_update> ordered_multiset;
 //erase: oms.erase(oms.upper_bound(value))
 
-const int mod = 1e9 + 7;
-const int inf = 1e9 + 7;
-const int mak = 2e5 + 7;
+constexpr int mod = 1e9 + 7;
+constexpr int inf = 1e9 + 7;
+constexpr int mak = 2e5 + 7;
 
-int main(){
-    io;
+string s; 
+void solve(){
+    cin >> s;
+    int cnt = 0;
+
+    for(int i = 0; i + 3 < s.size(); i++){
+        if(s.substr(i, 4) == "1100") cnt++;
+    }
+
+    int m; cin >> m;
+    while(m--){
+        int pos; char val; cin >> pos >> val; pos--;
+        int a = max(0ll, pos - 3), b = min((ll)s.size() - 1, pos + 3);
+
+        for(int i = a; i + 3 <= b; i++){
+            if(s.substr(i, 4) == "1100") cnt--;
+        }
+
+        s[pos] = val;
+        for(int i = a; i + 3 <= b; i++){
+            if(s.substr(i, 4) == "1100") cnt++;
+        }
+
+        cout << (cnt ? "YES" : "NO") << endl;
+    }
+}
+
+signed main(){
+    int t; cin >> t;
+    while(t--)
+        solve();
 }
