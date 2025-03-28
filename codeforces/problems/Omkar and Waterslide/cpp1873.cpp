@@ -68,20 +68,9 @@ const int mak = 2e5 + 7;
 int solve(){
     int n; cin >> n;
     vector<int> v(n); cin >> v;
-    int r, ans = 0, mini;
-    for(int l = 0; l < n - 1;){
-        if(v[l] > v[l + 1]){
-            r = l + 1;
-            mini = inf;
-            while(r < n and v[l] > v[r]){
-                mini = min(mini, v[r]);
-                r++;
-            }
-            ans += v[l] - mini;
-            l = r;
-        } else {
-            l++;
-        }
+    int ans = 0;
+    for(int i = 1; i < n; i++){
+        ans += max(v[i - 1] - v[i], 0ll);
     }
 
     return ans;
