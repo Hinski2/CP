@@ -18,15 +18,11 @@ int solve(){
     }
 
     int ans = 0;
-    for(auto [k, v]: fi){
-        ans += v * (v + 1) / 2;
+    for(auto u: vs){
+        ans += fi[u[0]] - all[u];
+        ans += se[u[1]] - all[u];
     }
-    for(auto [k, v]: se){
-        ans += v * (v + 1) / 2;
-    }
-    for(auto [k, v]: all){
-        ans -= v * (v - 1);
-    }
+    return ans / 2;
 }
 
 signed main(){
