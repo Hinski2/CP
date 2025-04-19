@@ -1,0 +1,10 @@
+[package]
+name = "rs1896"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "rs1896"
+path = "src/rs1896.rs"
+
+[dependencies]
