@@ -1,9 +1,5 @@
+#pragma once 
 #include<bits/stdc++.h>
-
-//! define sections
-#define fi first 
-#define se second
-typedef std::pair<int, int> pii;
 
 namespace utils{
     //! utils section
