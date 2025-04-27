@@ -50,6 +50,5 @@ int main(){
             m.insert(v[i]);
         }
     }
-
 }
 
