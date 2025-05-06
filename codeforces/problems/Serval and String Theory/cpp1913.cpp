@@ -1,12 +1,4 @@
-#!/bin/bash
- 
-name="a.cpp"
- 
-if [ -n "$1" ]; then
-  name="$1.cpp"
-fi
-
-echo "#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& v){
@@ -69,7 +61,7 @@ template<typename T> unsigned arg_min(const vector<T> &v){
 #define all(a) a.begin(), a.end()
 #define endl '\n'
 #define alf 'z' + 1
-#define yn (solve() ? \"YES\" : \"NO\")
+#define yn (solve() ? "YES" : "NO")
 
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -79,11 +71,24 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
+bool solve(){
+    int n, k; cin >> n >> k;
+    string s, rs; cin >> s;
+    rs = s;
+    reverse(all(rs));
+
+    bool diff = false;
+    for(int i = 1; i < n; i++)
+        if(s[i - 1] != s[i]) diff = true;
+    
+    if(!diff) return 0;
+    if(s < rs) return 1;
+    return k;
+}
+
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int t; cin >> t;
     while(t--)
-}" > "$name"
-
-echo -e "\e[32mUtworzono plik: $name\e[0m"
- 
+        cout << yn << endl;
+}
