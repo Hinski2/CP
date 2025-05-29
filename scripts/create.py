@@ -126,7 +126,7 @@ def get_next_numb(root: Path) -> int:
 # main
 ########
 if __name__ == '__main__':
-    root = Path('/home/hinski2/Programowanie/competitive/codeforces/problems') # we start looking for files in this directory
+    root = Path('/home/hinski2/Programowanie/competitive/') # we start looking for files in this directory
     arg = sys.argv[1] if len(sys.argv) > 1 else None 
     
     filename, content = '', '' 
