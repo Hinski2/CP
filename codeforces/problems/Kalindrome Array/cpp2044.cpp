@@ -73,20 +73,35 @@ const int mak = 2e5 + 7;
 
 bool solve() {
     int n; cin >> n;
-    vector<int> a(n), b(n); cin >> a >> b;
+    vector<int> v(n); cin >> v;
 
-    int i = 0;
-    while(i < n and a[i] == b[i]) i++;
-    if(i == n) return 1;
+    int chosen = 0, l = 0, r = n - 1, ok = 1;
+    while(l < r) {
+        if(v[l] != v[r]) {
+            if(chosen and v[l] == chosen) l++;
+            else if(chosen and v[r] == chosen) r--;
+            else if(!chosen) chosen = v[l++];
+            else {
+                ok = 0;
+                break;
+            }
+        } else l++, r--;
+    }
+    if(ok) return 1;
 
-    if(b[i] < a[i]) return 0;
-    int diff = b[i] - a[i];
-
-    while(i < n and a[i] + diff == b[i]) i++;
-    if(i == n) return 1;
-
-    while(i < n and a[i] == b[i]) i++;
-    return i == n;
+    chosen = 0, l = 0, r = n - 1, ok = 1;
+    while(l < r) {
+        if(v[l] != v[r]) {
+            if(chosen and v[l] == chosen) l++;
+            else if(chosen and v[r] == chosen) r--;
+            else if(!chosen) chosen = v[r--];
+            else {
+                ok = 0;
+                break;
+            }
+        } else l++, r--;
+    }
+    return ok;
 }
 
 int main(){

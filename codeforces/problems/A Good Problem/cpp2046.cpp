@@ -62,6 +62,7 @@ template<typename T> unsigned arg_min(const vector<T> &v){
 #define endl '\n'
 #define alf 'z' + 1
 #define yn (solve() ? "YES" : "NO")
+#define int ll
 
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -71,27 +72,31 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool solve() {
-    int n; cin >> n;
-    vector<int> a(n), b(n); cin >> a >> b;
+int solve() {
+    int n, l, r, k; cin >> n >> l >> r >> k;
+    if(n == 2) {
+        return -1;
+    } else if(n % 2) {
+        return l;
+    } else {
+        int res = 1;
+        while(res <= r) {
+            if(res > l) {
+                if(k <= n - 2) return l;
+                else return res;
+            }
 
-    int i = 0;
-    while(i < n and a[i] == b[i]) i++;
-    if(i == n) return 1;
+            res *= 2;
+        }
 
-    if(b[i] < a[i]) return 0;
-    int diff = b[i] - a[i];
-
-    while(i < n and a[i] + diff == b[i]) i++;
-    if(i == n) return 1;
-
-    while(i < n and a[i] == b[i]) i++;
-    return i == n;
+        return -1;
+    }
 }
 
-int main(){
+signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int t; cin >> t;
-    while(t--)
-        cout << yn << endl;
+    while(t--) {
+        cout << solve() << endl;
+    }
 }

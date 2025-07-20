@@ -73,20 +73,18 @@ const int mak = 2e5 + 7;
 
 bool solve() {
     int n; cin >> n;
-    vector<int> a(n), b(n); cin >> a >> b;
+    pii s, f; cin >> s.fi >> s.se >> f.fi >> f.se;
+    vector<ll> v(n); cin >> v;
+    ll p = 1LL *(s.fi - f.fi)*(s.fi - f.fi) + 1LL *(s.se - f.se)*(s.se - f.se);
 
-    int i = 0;
-    while(i < n and a[i] == b[i]) i++;
-    if(i == n) return 1;
-
-    if(b[i] < a[i]) return 0;
-    int diff = b[i] - a[i];
-
-    while(i < n and a[i] + diff == b[i]) i++;
-    if(i == n) return 1;
-
-    while(i < n and a[i] == b[i]) i++;
-    return i == n;
+    sort(all(v));
+    if(p > v.back() * v.back()) {
+        ll suma = sum(v);
+        return suma * suma >= p;
+    } else {
+        ll suma = 2*v.back() - sum(v);
+        return suma <= 0 or suma * suma <= p;
+    }
 }
 
 int main(){
