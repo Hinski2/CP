@@ -71,32 +71,45 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool cmp(const pii &a, const pii &b) {
-    if(a.se != b.se) return a.se < b.se;
-    return a.fi < b.fi;
-}
+// bool check(int mid) {
+//     int skipped = 0;
+//     list<int> catt;
+
+//     for(int i = 1; i <= n; i++) {
+//         if(!catt.empty() and catt.back() > v[i]) {
+//             if(skipped) {
+//                while(catt.front() != skipped) catt.pop_front();
+//                catt.pop_front();
+//             }
+
+//             skipped = v[i];
+//         }
+//         catt.push_back(v[i]);
+//         if(catt.size() + (skipped ? -1 : 0) >= mid) return 1;
+//     }
+
+//     return 0;
+// } 
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int n; cin >> n;
-    vector<pii> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i].fi, v[i].fi--;
-    for(int i = 0; i < n; i++) cin >> v[i].se, v[i].se--;
+    vector<int> v(n + 1); for(int i = 1; i <= n; i++) cin >> v[i];
 
-    vector<int> inv(n);
-    for(int i = 0; i < n; i++)
-        inv[v[i].se] = i;
+    int ans = 1;
+    vector<int> r(n + 1, 1);
+    for(int i = n - 1; i >= 1; i--)
+        if(v[i] < v[i + 1]) r[i] = r[i + 1] + 1;
 
-    vector<int> pos_out(n);
-    for(int i = 0; i < n; i++) {
-        pos_out[i] = inv[v[i].fi];
-    }
+    vector<int> l(n + 1, 1);
+    for(int i = 2; i <= n; i++)
+        if(v[i - 1] < v[i]) l[i] = l[i - 1] + 1;
 
-    int maxi = -1, ans = 0;
-    for(auto u: pos_out) {
-        if(u > maxi) maxi = u;
-        else ans++;
-    }
+    ans = max(ans, *max_element(all(l)));
+    ans = max(ans, *max_element(all(r)));
 
+    for(int i = 1; i <= n - 2; i++)
+        if(v[i] < v[i + 2]) ans = max(ans, l[i] + r[i + 2]);
+    
     cout << ans << endl;
 }

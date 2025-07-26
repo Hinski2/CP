@@ -71,32 +71,15 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool cmp(const pii &a, const pii &b) {
-    if(a.se != b.se) return a.se < b.se;
-    return a.fi < b.fi;
+bool solve() {
+    int n, m; cin >> n >> m;
+    if(n == 1 or m == 1) return 0;
+    return n >= 3 or m >= 3;
 }
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int n; cin >> n;
-    vector<pii> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i].fi, v[i].fi--;
-    for(int i = 0; i < n; i++) cin >> v[i].se, v[i].se--;
-
-    vector<int> inv(n);
-    for(int i = 0; i < n; i++)
-        inv[v[i].se] = i;
-
-    vector<int> pos_out(n);
-    for(int i = 0; i < n; i++) {
-        pos_out[i] = inv[v[i].fi];
-    }
-
-    int maxi = -1, ans = 0;
-    for(auto u: pos_out) {
-        if(u > maxi) maxi = u;
-        else ans++;
-    }
-
-    cout << ans << endl;
+    int t; cin >> t;
+    while(t--)
+        cout << yn << endl;
 }

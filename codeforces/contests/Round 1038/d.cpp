@@ -71,32 +71,38 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool cmp(const pii &a, const pii &b) {
-    if(a.se != b.se) return a.se < b.se;
-    return a.fi < b.fi;
+struct S{
+    int x, y, idx;
+};
+
+bool cmp(const S& a, const S& b) {
+    if(a.x != b.x) return a.x > b.x;
+    return a.y > b.y;
+}
+
+
+void solve() {
+    int n; cin >> n;
+    vector<S> v(n);
+    for(int i = 0; i < n; i++) {
+        cin >> v[i].x >> v[i].y;
+        v[i].idx = i + 1;
+    }
+
+    sort(all(v), cmp);
+    int suma = 0;
+
+    for(int i = 0; i < n / 2; i++) {
+        cout << v[i].idx << ' ' << v[n - i - 1].idx << endl;
+        suma += abs(v[i].x - v[n - i - 1].x) + 
+                abs(v[i].y - v[n - i - 1].y);
+    }
+    cout << suma << endl;
 }
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int n; cin >> n;
-    vector<pii> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i].fi, v[i].fi--;
-    for(int i = 0; i < n; i++) cin >> v[i].se, v[i].se--;
-
-    vector<int> inv(n);
-    for(int i = 0; i < n; i++)
-        inv[v[i].se] = i;
-
-    vector<int> pos_out(n);
-    for(int i = 0; i < n; i++) {
-        pos_out[i] = inv[v[i].fi];
-    }
-
-    int maxi = -1, ans = 0;
-    for(auto u: pos_out) {
-        if(u > maxi) maxi = u;
-        else ans++;
-    }
-
-    cout << ans << endl;
+    int t; cin >> t;
+    while(t--)
+        solve();
 }

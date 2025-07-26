@@ -1,6 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+template<typename T> ostream& operator<<(ostream& os, const pair<T, T>& v){
+    os << v.first << ' ' << v.second << endl;
+    return os;
+}
+
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& v){
     for(const auto &u: v){
         os << u << ' ';
@@ -14,6 +19,7 @@ template<typename T> istream& operator>>(istream& is, vector<T>& v){
     }
     return is;
 }
+
 
 template<typename T> long long sum(const vector<T> &v){
     long long s = 0;
@@ -62,6 +68,7 @@ template<typename T> unsigned arg_min(const vector<T> &v){
 #define endl '\n'
 #define alf 'z' + 1
 #define yn (solve() ? "YES" : "NO")
+#define int ll
 
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -71,32 +78,46 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool cmp(const pii &a, const pii &b) {
-    if(a.se != b.se) return a.se < b.se;
-    return a.fi < b.fi;
+struct S{
+    int fi, se, sum;
+};
+
+int n, m;
+bool cmp(const S& a, const S& b) {
+    if(a.sum != b.sum)
+        return a.sum > b.sum;
+    return a.se > b.se;
 }
 
-int main(){
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int n; cin >> n;
-    vector<pii> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i].fi, v[i].fi--;
-    for(int i = 0; i < n; i++) cin >> v[i].se, v[i].se--;
-
-    vector<int> inv(n);
-    for(int i = 0; i < n; i++)
-        inv[v[i].se] = i;
-
-    vector<int> pos_out(n);
+int solve() {
+    cin >> n >> m;
+    vector<vector<int>> v(n, vector<int>(m));
+    for(auto &u: v)
+        cin >> u;
+    
+    vector<S> ord(n); // sum, i
     for(int i = 0; i < n; i++) {
-        pos_out[i] = inv[v[i].fi];
+        ord[i].se = i;
+        for(int j = 0; j < m; j++)
+            ord[i].fi += (m - j) * v[i][j], ord[i].sum += v[i][j];
     }
 
-    int maxi = -1, ans = 0;
-    for(auto u: pos_out) {
-        if(u > maxi) maxi = u;
-        else ans++;
+    sort(all(ord), cmp);
+    vector<int> ans;
+    for(auto u: ord) {
+        ans.insert(ans.end(), all(v[u.se]));
     }
 
-    cout << ans << endl;
+    int sum = 0;
+    for(int i = 0, mult = n * m; i < n * m; i++, mult--) {
+        sum += ans[i] * mult;
+    }
+    return sum;
+}
+
+signed main(){
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    int t; cin >> t;
+    while(t--)
+        cout << solve() << endl;
 }

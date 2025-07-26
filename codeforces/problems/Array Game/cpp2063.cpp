@@ -62,6 +62,7 @@ template<typename T> unsigned arg_min(const vector<T> &v){
 #define endl '\n'
 #define alf 'z' + 1
 #define yn (solve() ? "YES" : "NO")
+#define int ll
 
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -71,32 +72,47 @@ const int mod = 1e9 + 7;
 const int inf = 1e9 + 7;
 const int mak = 2e5 + 7;
 
-bool cmp(const pii &a, const pii &b) {
-    if(a.se != b.se) return a.se < b.se;
-    return a.fi < b.fi;
+int solve() {
+    int n, k; cin >> n >> k;
+    vector<int> v(n); cin >> v;
+
+    if(k == 1) {
+        sort(all(v));
+        int mini = *min_element(all(v));
+        for(int i = 1; i < n; i++)
+            mini = min(mini, v[i] - v[i - 1]);
+
+        return mini;
+    } else if(k == 2) {
+        sort(all(v));
+        vector<int> diff;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                if(i != j) diff.pb(abs(v[i] - v[j]));
+            }
+        }
+
+        int mini = min(*min_element(all(v)), *min_element(all(diff)));
+        for(auto d: diff) {
+            int up = *upper_bound(all(v), d);
+            auto l = lower_bound(all(v), d);
+            int low;
+            if(l == v.begin()) low = v.front();
+            else low = *(--l);
+
+            if(up >= d) mini = min(mini, up - d);
+            if(low <= d) mini = min(mini, d - low);
+        }
+
+        return mini;
+    } else {
+        return 0;
+    }
 }
 
-int main(){
+signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int n; cin >> n;
-    vector<pii> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i].fi, v[i].fi--;
-    for(int i = 0; i < n; i++) cin >> v[i].se, v[i].se--;
-
-    vector<int> inv(n);
-    for(int i = 0; i < n; i++)
-        inv[v[i].se] = i;
-
-    vector<int> pos_out(n);
-    for(int i = 0; i < n; i++) {
-        pos_out[i] = inv[v[i].fi];
-    }
-
-    int maxi = -1, ans = 0;
-    for(auto u: pos_out) {
-        if(u > maxi) maxi = u;
-        else ans++;
-    }
-
-    cout << ans << endl;
+    int t; cin >> t;
+    while(t--) 
+        cout << solve() << endl;
 }
