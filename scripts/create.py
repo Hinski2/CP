@@ -11,16 +11,45 @@ from typing import List, Tuple
 TEMPLATE_CPP = """#include <bits/stdc++.h>
 using namespace std;
 
-template<typename T> ostream& operator<<(ostream& os, const pair<T, T>& p) {
+// geometry
+template<typename T>
+ostream& operator<<(ostream& os, const pair<T, T>& p) {
     os << p.first << ' ' << p.second << '\\n';
     return os;
 }
 
-template<typename T> istream& operator<<(istream& os, const pair<T, T>& p) {
-    os >> p.first >> p.second;
-    return os;
+template<typename T> 
+istream& operator>>(istream& is, pair<T, T>& p) {
+    is >> p.first >> p.second;
+    return is;
 }
 
+template<typename T>
+pair<T, T> operator + (const T& a, const T& b) {
+    return make_pair(a.first + b.first, a.second + b.second);
+}
+
+template<typename T>
+pair<T, T> operator - (const T& a, const T& b) {
+    return make_pair(a.first - b.first, a.second - b.second);
+}
+
+template<typename T>
+T operator * (const T& a, const T& b) {
+    return a.first * b.second - a.second * b.first;
+}
+
+template<typename T>
+T cross_product(const T& a, const T& b) {
+    return a * b;
+}
+
+template<typename T>
+T cross_product(const T& a, const T& b, const T& c) {
+    return (b - a) * (c - a);
+}
+
+// vector
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {
     for(const auto &u: v) {
         os << u << ' ';
@@ -33,16 +62,6 @@ template<typename T> istream& operator>>(istream& is, vector<T>& v) {
         is >> u;
     }
     return is;
-}
-
-template<typename T> long long sum_element(const vector<T> &v) {
-    long long s = 0;
-    for(auto u: v) s += u;
-    return s;
-}
-
-template<typename T, typename ... Args> T max(const T& a, const Args& ... args) {
-    return max(a, max(args...));
 }
 
 #define fi first
